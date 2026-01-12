@@ -1,1 +1,129 @@
-<h2>HELLO WORLD</h2>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz della Forza</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      text-align: center;
+    }
+    .domanda {
+      display: none;
+    }
+    .domanda.attiva {
+      display: block;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    label {
+      display: block;
+      margin: 10px 0;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🔮 Quiz della Forza</h1>
+
+<!-- DOMANDA 1 -->
+<div class="domanda attiva">
+  <h2>Domanda 1</h2>
+  <p>In una situazione di pericolo tu…</p>
+
+  <label>
+    <input type="radio" name="q1" data-jedi="2" data-sith="0" data-grigio="1">
+    Mantieni la calma e proteggi gli altri
+  </label>
+  <label>
+    <input type="radio" name="q1" data-jedi="0" data-sith="2" data-grigio="0">
+    Usi la rabbia per vincere
+  </label>
+  <label>
+    <input type="radio" name="q1" data-jedi="1" data-sith="1" data-grigio="2">
+    Agisci senza seguire regole rigide
+  </label>
+
+  <button onclick="avanti(1)">Avanti</button>
+</div>
+
+<!-- DOMANDA 2 -->
+<div class="domanda">
+  <h2>Domanda 2</h2>
+  <p>Cos’è il potere per te?</p>
+
+  <label>
+    <input type="radio" name="q2" data-jedi="2" data-sith="0" data-grigio="1">
+    Uno strumento per mantenere l’equilibrio
+  </label>
+  <label>
+    <input type="radio" name="q2" data-jedi="0" data-sith="2" data-grigio="0">
+    Un mezzo per dominare
+  </label>
+  <label>
+    <input type="radio" name="q2" data-jedi="1" data-sith="1" data-grigio="2">
+    Qualcosa da usare con cautela
+  </label>
+
+  <button onclick="avanti(2)">Scopri il risultato</button>
+</div>
+
+<!-- RISULTATO -->
+<div class="domanda" id="risultato">
+  <h2>✨ Il tuo destino nella Forza</h2>
+  <p id="output"></p>
+</div>
+
+<script>
+let punteggi = {
+  jedi: 0,
+  sith: 0,
+  grigio: 0
+};
+
+function avanti(numeroDomanda) {
+  const risposta = document.querySelector(`input[name="q${numeroDomanda}"]:checked`);
+  if (!risposta) {
+    alert("Seleziona una risposta!");
+    return;
+  }
+
+  punteggi.jedi += parseInt(risposta.dataset.jedi);
+  punteggi.sith += parseInt(risposta.dataset.sith);
+  punteggi.grigio += parseInt(risposta.dataset.grigio);
+
+  document.querySelectorAll(".domanda")[numeroDomanda - 1].classList.remove("attiva");
+  document.querySelectorAll(".domanda")[numeroDomanda].classList.add("attiva");
+
+  if (numeroDomanda === 2) mostraRisultato();
+}
+
+function mostraRisultato() {
+  let esito = "⚖️ Jedi Grigio – cammini tra luce e oscurità";
+
+  if (punteggi.jedi > punteggi.sith && punteggi.jedi > punteggi.grigio) {
+    esito = "🟦 Jedi – segui la luce e l’equilibrio della Forza";
+  } else if (punteggi.sith > punteggi.jedi && punteggi.sith > punteggi.grigio) {
+    esito = "🟥 Sith – la passione e il potere guidano le tue scelte";
+  }
+
+  document.getElementById("output").innerText = `
+Punteggi finali:
+Jedi: ${punteggi.jedi}
+Sith: ${punteggi.sith}
+Jedi Grigio: ${punteggi.grigio}
+
+${esito}
+`;
+}
+</script>
+
+</body>
+</html>
