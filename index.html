@@ -84,8 +84,8 @@ button:active::before { box-shadow:0 0 60px #3f8cff,0 0 100px #3f8cff inset; opa
 <button id="next">Avanti</button>
 <div id="output"></div>
 <div id="chart"></div>
-<div id="socials"></div>
 <button id="ricomincia" style="display:none;">🔄 Ricomincia il Quiz</button>
+<div id="socials"></div>
 
 <script>
 let domandaCorrente=0;
@@ -165,13 +165,19 @@ function mostraRisultato(){
 
   // ---- social links ----
   socialsDiv.innerHTML = `
-    <a href="https://www.instagram.com/tuoProfilo" target="_blank" style="text-decoration:none;">
+    <a href="https://www.instagram.com/jgacademy.national" target="_blank" style="text-decoration:none;">
       <svg width="40" height="40" viewBox="0 0 24 24" fill="#E1306C" xmlns="http://www.w3.org/2000/svg">
         <path d="M7.75 2h8.5C19.55 2 22 4.45 22 7.75v8.5C22 19.55 19.55 22 16.25 22h-8.5C4.45 22 2 19.55 2 16.25v-8.5C2 4.45 4.45 2 7.75 2zm0 1.5C5.68 3.5 4 5.18 4 7.25v8.5C4 18.32 5.68 20 7.75 20h8.5c2.07 0 3.75-1.68 3.75-3.75v-8.5C20 5.18 18.32 3.5 16.25 3.5h-8.5z"/>
         <path d="M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM17.5 6.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
       </svg>
     </a>
-    <a href="https://www.tiktok.com/@tuoProfilo" target="_blank" style="text-decoration:none;">
+    <a href="https://www.instagram.com/jgacademy.pavia" target="_blank" style="text-decoration:none;">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="#E1306C" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7.75 2h8.5C19.55 2 22 4.45 22 7.75v8.5C22 19.55 19.55 22 16.25 22h-8.5C4.45 22 2 19.55 2 16.25v-8.5C2 4.45 4.45 2 7.75 2zm0 1.5C5.68 3.5 4 5.18 4 7.25v8.5C4 18.32 5.68 20 7.75 20h8.5c2.07 0 3.75-1.68 3.75-3.75v-8.5C20 5.18 18.32 3.5 16.25 3.5h-8.5z"/>
+        <path d="M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM17.5 6.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+      </svg>
+    </a>
+    <a href="https://www.tiktok.com/@jgacademy.pavia" target="_blank" style="text-decoration:none;">
       <svg width="40" height="40" viewBox="0 0 24 24" fill="#69C9D0" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 2v7.5a4.5 4.5 0 1 0 4.5 4.5V7.5h3V2h-7.5z"/>
       </svg>
