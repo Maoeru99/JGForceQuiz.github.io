@@ -2,50 +2,161 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
   <title>Quiz della Forza</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 40px auto;
-      text-align: center;
-    }
-    .domanda {
-      display: none;
-    }
-    .domanda.attiva {
-      display: block;
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    label {
-      display: block;
-      margin: 10px 0;
-      text-align: left;
-    }
-    #progress-container {
-      width: 100%;
-      background-color: #ddd;
-      height: 10px;
-      border-radius: 5px;
-      margin: 20px 0;
-      overflow: hidden;
-    }
-    #progress-bar {
-      height: 100%;
-      width: 0%;
-      background-color: #3f8cff;
-      transition: width 0.4s ease;
-    }
+  font-family: 'Orbitron', sans-serif;
+  background: black;
+  color: #f5f5f5;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  text-align: center;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* layer di stelle */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: transparent;
+  box-shadow:
+    10vw 20vh white,
+    50vw 30vh white,
+    70vw 80vh white,
+    20vw 70vh white,
+    90vw 10vh white,
+    40vw 40vh white,
+    60vw 60vh white,
+    30vw 20vh white,
+    80vw 50vh white,
+    15vw 85vh white;
+  animation: stars 10s linear infinite;
+  z-index: -1;
+}
+
+@keyframes stars {
+  0% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-2px) translateX(1px); }
+  100% { transform: translateY(0) translateX(0); }
+}
+
+h1 {
+  color: #ffe81f;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+p {
+  color: #ddd;
+  line-height: 1.5;
+}
+
+label {
+  display: block;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 12px;
+  margin: 12px 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+label:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+input[type="radio"] {
+  accent-color: #ffe81f;
+  margin-right: 10px;
+}
+
+button {
+  margin-top: 25px;
+  padding: 12px 30px;
+  font-size: 16px;
+  font-family: 'Orbitron', sans-serif;
+  background: linear-gradient(90deg, #3f8cff, #1b3cff);
+  border: none;
+  border-radius: 30px;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(63,140,255,0.6);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(63,140,255,0.9);
+}
+
+/* Sith button variant (se vuoi usarla) */
+button.sith {
+  background: linear-gradient(90deg, #c62828, #8e0000);
+  box-shadow: 0 0 15px rgba(198,40,40,0.7);
+}
+
+/* DOMANDE */
+.domanda {
+  display: none;
+  animation: fadeIn 0.5s ease;
+}
+
+.domanda.attiva {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* BARRA DI PROGRESSO */
+#progress-container {
+  width: 100%;
+  height: 8px;
+  background: #222;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 20px 0 30px;
+}
+
+#progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(
+    90deg,
+    #3f8cff,
+    #ffe81f,
+    #c62828
+  );
+  transition: width 0.4s ease;
+}
+
+/* RISULTATO */
+#output {
+  white-space: pre-line;
+  margin-top: 20px;
+  font-size: 15px;
+}
   </style>
 </head>
 <body>
 
 <h1>🔮 Quiz della Forza</h1>
+  <p style="font-size:12px; opacity:0.7; letter-spacing:1px;">
+  Un test per determinare il tuo destino nella Forza
+</p>
+
 <div id="progress-container">
   <div id="progress-bar"></div>
 </div>
@@ -100,16 +211,16 @@
 
 <script>
 const domande = document.querySelectorAll(".domanda");
-const totaleDomande = domande.length - 1; // escludiamo il risultato
+const totaleDomande = domande.length - 1;
 const progressBar = document.getElementById("progress-bar");
 
-let punteggi = {
+let punteggi = JSON.parse(localStorage.getItem("punteggi")) || {
   jedi: 0,
   sith: 0,
   grigio: 0
 };
 
-let domandaCorrente = 0;
+let domandaCorrente = parseInt(localStorage.getItem("domandaCorrente")) || 0;
 
 function aggiornaProgress() {
   const percentuale = (domandaCorrente / totaleDomande) * 100;
@@ -127,8 +238,11 @@ function avanti(numeroDomanda) {
   punteggi.sith += parseInt(risposta.dataset.sith);
   punteggi.grigio += parseInt(risposta.dataset.grigio);
 
+  localStorage.setItem("punteggi", JSON.stringify(punteggi));
+
   domande[domandaCorrente].classList.remove("attiva");
   domandaCorrente++;
+  localStorage.setItem("domandaCorrente", domandaCorrente);
   domande[domandaCorrente].classList.add("attiva");
 
   aggiornaProgress();
@@ -139,15 +253,22 @@ function avanti(numeroDomanda) {
 }
 
 function mostraRisultato() {
+  const output = document.getElementById("output");
   let esito = "⚖️ Jedi Grigio – cammini tra luce e oscurità";
+  let colore = "#a080ff"; // viola per Jedi Grigio
+  let shadow = "0 0 20px #a080ff";
 
   if (punteggi.jedi > punteggi.sith && punteggi.jedi > punteggi.grigio) {
     esito = "🟦 Jedi – segui la luce e l’equilibrio della Forza";
+    colore = "#3f8cff"; 
+    shadow = "0 0 25px #3f8cff";
   } else if (punteggi.sith > punteggi.jedi && punteggi.sith > punteggi.grigio) {
     esito = "🟥 Sith – la passione e il potere guidano le tue scelte";
+    colore = "#c62828";
+    shadow = "0 0 25px #c62828";
   }
 
-  document.getElementById("output").innerText = `
+  output.innerText = `
 Punteggi finali:
 Jedi: ${punteggi.jedi}
 Sith: ${punteggi.sith}
@@ -155,11 +276,24 @@ Jedi Grigio: ${punteggi.grigio}
 
 ${esito}
 `;
+
+  output.style.color = colore;
+  output.style.textShadow = shadow;
 }
 
-// inizializza
+
+// RIPRISTINO STATO ALL’AVVIO
+domande.forEach(d => d.classList.remove("attiva"));
+domande[domandaCorrente].classList.add("attiva");
 aggiornaProgress();
+
+// BLOCCO REFRESH ACCIDENTALE
+window.addEventListener("beforeunload", function (e) {
+  e.preventDefault();
+  e.returnValue = "";
+});
 </script>
+
 
 
 </body>
