@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JG Force Quiz</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
+
 <style>
 body {
   font-family: 'Orbitron', sans-serif;
@@ -13,309 +14,217 @@ body {
   margin: 0 auto;
   padding: 30px 20px;
   text-align: center;
-  overflow-x: hidden;
   background: black;
-  position: relative;
-  -webkit-tap-highlight-color: transparent; /* rimuove alone blu su mobile */
-}
-#stars { position: fixed; top:0; left:0; width:100%; height:100%; z-index: -1; background: black; }
-
-#chart {
-  display: block;
-  margin: 20px auto;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
-#ricomincia {
-  display: block;
-  margin: 20px auto;
+#stars {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
 }
 
-h1 { color: #ffe81f; letter-spacing:2px; margin-bottom:10px; }
-h2 { margin-top:0; }
-
-@keyframes fadeInUp { 0%{opacity:0;transform:translateY(30px);} 100%{opacity:1;transform:translateY(0);} }
-@keyframes fadeOutDown { 0%{opacity:1;transform:translateY(0);} 100%{opacity:0;transform:translateY(30px);} }
-
-.domanda { display:none; background: rgba(0,0,0,0.6); padding: 15px; border-radius:12px; margin-bottom:15px; }
-.domanda.attiva { display:block; animation: fadeInUp 0.5s ease forwards; }
-.domanda.esci { animation: fadeOutDown 0.5s ease forwards; }
-
-/* --- Etichette cliccabili come pulsanti --- */
-label {
-  display:block;
-  background: rgba(255,255,255,0.05);
-  border-radius:8px;
-  padding:12px;
-  margin:12px 0;
-  cursor:pointer;
-  transition: all 0.3s;
+/* --- Domande --- */
+.domanda {
+  display: none;
+  background: rgba(0,0,0,0.6);
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 15px;
 }
-label:hover {
-  background: rgba(255,255,255,0.15);
+.domanda.attiva { display: block; animation: fadeInUp .4s ease; }
+.domanda.esci { animation: fadeOutDown .4s ease; }
+
+@keyframes fadeInUp {
+  from {opacity:0; transform:translateY(30px);}
+  to {opacity:1; transform:none;}
+}
+@keyframes fadeOutDown {
+  from {opacity:1;}
+  to {opacity:0; transform:translateY(30px);}
 }
 
-/* --- Radio button nascosti --- */
+/* --- Radio + label --- */
 input[type="radio"] {
   display: none;
 }
 
+label {
+  display: block;
+  background: rgba(255,255,255,.05);
+  border-radius: 8px;
+  padding: 12px;
+  margin: 12px 0;
+  cursor: pointer;
+  transition: .25s;
+  user-select: none;
+}
+label:hover { background: rgba(255,255,255,.15); }
+
+/* SELEZIONE CORRETTA */
+input[type="radio"]:checked + label {
+  background: rgba(63,140,255,.35);
+  box-shadow: 0 0 15px rgba(63,140,255,.8);
+  transform: scale(1.02);
+}
+
+label:active { transform: scale(.97); }
+
+/* --- Pulsanti --- */
 button {
-  margin-top:25px; padding:16px 36px; font-size:18px; font-family:'Orbitron',sans-serif;
-  border:none; border-radius:30px; color:white; cursor:pointer;
-  background: linear-gradient(90deg,#3f8cff,#1b3cff); box-shadow:0 0 15px rgba(63,140,255,0.6);
-  position: relative; overflow:hidden; transition: all 0.3s ease;
+  margin-top: 25px;
+  padding: 16px 36px;
+  font-size: 18px;
+  font-family: 'Orbitron', sans-serif;
+  border: none;
+  border-radius: 30px;
+  color: white;
+  cursor: pointer;
+  background: linear-gradient(90deg,#3f8cff,#1b3cff);
+  box-shadow: 0 0 15px rgba(63,140,255,.6);
 }
-button::before {
-  content:""; position:absolute; top:0; left:0; right:0; bottom:0; border-radius:30px;
-  box-shadow:0 0 30px #3f8cff,0 0 60px #3f8cff inset; opacity:0.6; transition: all 0.3s ease; pointer-events:none;
+
+#progress-container {
+  width:100%;
+  height:8px;
+  background:#222;
+  border-radius:4px;
+  overflow:hidden;
+  margin:20px 0 30px;
 }
-button:active::before { box-shadow:0 0 60px #3f8cff,0 0 100px #3f8cff inset; opacity:1; }
+#progress-bar {
+  height:100%;
+  width:0%;
+  background: linear-gradient(90deg,#3f8cff,#ffe81f,#c62828);
+  transition: width .4s;
+}
 
-#progress-container { width:100%; height:8px; background:#222; border-radius:4px; overflow:hidden; margin:20px 0 30px;}
-#progress-bar { height:100%; width:0%; background: linear-gradient(90deg,#3f8cff,#ffe81f,#c62828); transition: width 0.4s ease; }
-
-#output { margin-top:20px; padding:15px; border-radius:12px; background: rgba(0,0,0,0.6); white-space: pre-line; text-align:left; position:relative; }
-
-#socials { margin-top:30px; display:none; justify-content:center; gap:30px; }
-
-@media(max-width:480px){
-  body{padding:20px 15px;} h1{font-size:24px;} h2{font-size:18px;} label{font-size:16px;} 
-  #progress-container{height:6px;margin:15px 0 25px;} 
+#output {
+  margin-top:20px;
+  padding:15px;
+  border-radius:12px;
+  background: rgba(0,0,0,.6);
+  white-space: pre-line;
+  text-align:left;
 }
 </style>
 </head>
+
 <body>
-  <img src="logo.png" style="width:150px; height:auto; display:block; margin: 0 auto 20px;">
 
 <canvas id="stars"></canvas>
+
 <h1>Quiz della Forza</h1>
-<p style="font-size:12px; opacity:0.7;">Scopri se sei Jedi, Sith o Jedi Grigio</p>
+<p style="font-size:12px;opacity:.7">Scopri se sei Jedi, Sith o Jedi Grigio</p>
+
 <div id="progress-container"><div id="progress-bar"></div></div>
 
-<!-- Domande -->
+<!-- ===== DOMANDE ===== -->
+
 <div class="domanda attiva">
   <h2>Quale frase ti rappresenta di più?</h2>
-  <label><input type="radio" name="q0" value="grigio">Questa è la via</label>
-  <label><input type="radio" name="q0" value="sith">La Forza mi libererà</label>
-  <label><input type="radio" name="q0" value="jedi">Non c'è morte, c'è solo la Forza</label>
+  <input id="q0a" type="radio" name="q0" value="grigio"><label for="q0a">Questa è la via</label>
+  <input id="q0b" type="radio" name="q0" value="sith"><label for="q0b">La Forza mi libererà</label>
+  <input id="q0c" type="radio" name="q0" value="jedi"><label for="q0c">Non c'è morte, c'è solo la Forza</label>
 </div>
 
 <div class="domanda">
   <h2>Qual è la tua nave preferita?</h2>
-  <label><input type="radio" name="q1" value="sith">TIE Fighter</label>
-  <label><input type="radio" name="q1" value="jedi">Millenium Falcon</label>
-  <label><input type="radio" name="q1" value="grigio">X-Wing</label>
+  <input id="q1a" type="radio" name="q1" value="sith"><label for="q1a">TIE Fighter</label>
+  <input id="q1b" type="radio" name="q1" value="jedi"><label for="q1b">Millennium Falcon</label>
+  <input id="q1c" type="radio" name="q1" value="grigio"><label for="q1c">X-Wing</label>
 </div>
 
 <div class="domanda">
   <h2>Cosa faresti se qualcuno ti provocasse?</h2>
-  <label><input type="radio" name="q2" value="jedi"> Rimango calmo e ragiono</label>
-  <label><input type="radio" name="q2" value="sith"> Colpirei subito con forza</label>
-  <label><input type="radio" name="q2" value="grigio"> Dipende dalla situazione</label>
+  <input id="q2a" type="radio" name="q2" value="jedi"><label for="q2a">Rimango calmo</label>
+  <input id="q2b" type="radio" name="q2" value="sith"><label for="q2b">Colpisco subito</label>
+  <input id="q2c" type="radio" name="q2" value="grigio"><label for="q2c">Dipende</label>
 </div>
 
 <div class="domanda">
   <h2>Chi vorresti come maestro?</h2>
-  <label><input type="radio" name="q3" value="jedi">Obi-Wan Kenobi</label>
-  <label><input type="radio" name="q3" value="sith">Conte Dooku</label>
-  <label><input type="radio" name="q3" value="grigio">Mace Windu</label>
-</div>
-
-<div class="domanda">
-  <h2>Vedi un bambino che cade in acqua e inizia a piangere, cosa fai?</h2>
-  <label><input type="radio" name="q4" value="sith">Mi rotolo dalle risate</label>
-  <label><input type="radio" name="q4" value="grigio">Lo aiuto a rialzarsi e cerco di rincuorarlo</label>
-  <label><input type="radio" name="q4" value="jedi">Lo ignoro e procedo con le mie faccende</label>
-</div>
-
-<div class="domanda">
-  <h2>Quale valore è per te più importante?</h2>
-  <label><input type="radio" name="q5" value="jedi">Pace</label>
-  <label><input type="radio" name="q5" value="grigio">Giustizia</label>
-  <label><input type="radio" name="q5" value="sith">Libertà</label>
-</div>
-
-<div class="domanda">
-  <h2>Quale colore preferisci?</h2>
-  <label><input type="radio" name="q6" value="sith">Rosso</label>
-  <label><input type="radio" name="q6" value="jedi">Verde</label>
-  <label><input type="radio" name="q6" value="grigio">Viola</label>
-</div>
-
-<div class="domanda">
-  <h2>Da quale droide vorresti farti accompagnare?</h2>
-  <label><input type="radio" name="q7" value="sith">Chopper</label>
-  <label><input type="radio" name="q7" value="grigio">C3PO</label>
-  <label><input type="radio" name="q7" value="jedi">R2D2</label>
-</div>
-
-<div class="domanda">
-  <h2>Un nemico ha appena ucciso il tuo maestro. Qual è la tua reazione?</h2>
-  <label><input type="radio" name="q8" value="grigio">Lo attacco. La pagherà per ciò che ha fatto</label>
-  <label><input type="radio" name="q8" value="sith">Lo attacco. Nessuno può rubare la mia preda</label>
-  <label><input type="radio" name="q8" value="jedi">Mantengo la calma, valuto la situazione, decido se attaccare o scappare</label>
-</div>
-
-<div class="domanda">
-  <h2>Come sfoghi rabbia e frustrazione?</h2>
-  <label><input type="radio" name="q9" value="sith">Mi sfogo in qualunque modo mi faccia stare meglio</label>
-  <label><input type="radio" name="q9" value="jedi">Mi immergo in un ambiente calmo e familiare</label>
-  <label><input type="radio" name="q9" value="grigio">Sfrutto l'energia in ecceso per qualcosa di produttivo</label>
+  <input id="q3a" type="radio" name="q3" value="jedi"><label for="q3a">Obi-Wan</label>
+  <input id="q3b" type="radio" name="q3" value="sith"><label for="q3b">Dooku</label>
+  <input id="q3c" type="radio" name="q3" value="grigio"><label for="q3c">Mace Windu</label>
 </div>
 
 <button id="next">Avanti</button>
 <div id="output"></div>
-<canvas id="chart" width="300" height="300" style="margin-top:20px;"></canvas>
-<button id="ricomincia" style="display:none;">🔄 Ricomincia il Quiz</button>
-<div id="socials"></div>
 
 <script>
-let domandaCorrente=0;
-const domande=document.querySelectorAll(".domanda");
-const nextBtn=document.getElementById("next");
-const ricominciaBtn=document.getElementById("ricomincia");
-const progressBar=document.getElementById("progress-bar");
-const chartCanvas=document.getElementById("chart");
-const ctxChart=chartCanvas.getContext("2d");
-const socialsDiv=document.getElementById("socials");
-let punteggi={jedi:0,sith:0,grigio:0};
+let domandaCorrente = 0;
+const domande = document.querySelectorAll(".domanda");
+const nextBtn = document.getElementById("next");
+const progressBar = document.getElementById("progress-bar");
 
-function aggiornaProgress(){ progressBar.style.width=((domandaCorrente)/domande.length*100)+"%"; }
+let punteggi = { jedi:0, sith:0, grigio:0 };
 
-nextBtn.addEventListener("click",function(){
-  const selected=document.querySelector('input[name="q'+domandaCorrente+'"]:checked');
-  if(!selected){ alert("Seleziona una risposta!"); return; }
-  punteggi[selected.value]++;
-
-  const currentDomanda = domande[domandaCorrente];
-  currentDomanda.classList.add("esci"); 
-  setTimeout(()=>{
-    currentDomanda.classList.remove("attiva","esci");
-    domandaCorrente++;
-    if(domandaCorrente<domande.length){
-      domande[domandaCorrente].classList.add("attiva"); 
-    } else { mostraRisultato(); }
-    aggiornaProgress();
-  },500);
-});
-
-function mostraRisultato(){
-  const output=document.getElementById("output");
-  let esito="⚖️ Jedi Grigio – cammini tra luce e oscurità";
-  let colore="#a080ff";
-  if(punteggi.jedi>punteggi.sith && punteggi.jedi>punteggi.grigio){ esito="🟦 Jedi – segui la luce e l’equilibrio della Forza"; colore="#3f8cff"; }
-  else if(punteggi.sith>punteggi.jedi && punteggi.sith>punteggi.grigio){ esito="🟥 Sith – la passione e il potere guidano le tue scelte"; colore="#c62828"; }
-
-  const totale=punteggi.jedi+punteggi.sith+punteggi.grigio;
-  const percJedi = ((punteggi.jedi/totale)*100).toFixed(0);
-  const percSith = ((punteggi.sith/totale)*100).toFixed(0);
-  const percGrigio = ((punteggi.grigio/totale)*100).toFixed(0);
-
-  output.innerText=`Punteggi finali:\nJedi: ${punteggi.jedi} (${percJedi}%)\nSith: ${punteggi.sith} (${percSith}%)\nJedi Grigio: ${punteggi.grigio} (${percGrigio}%)\n\n${esito}`;
-  output.style.color=colore;
-  output.style.textShadow=`0 0 25px ${colore},0 0 50px ${colore}`;
-  nextBtn.style.display="none";
-  ricominciaBtn.style.display="inline-block";
-  ricominciaBtn.style.background=`linear-gradient(90deg,${colore},${colore})`;
-  ricominciaBtn.style.boxShadow=`0 0 20px ${colore},0 0 50px ${colore} inset`;
-  progressBar.style.width="100%";
-
-  // ---- effetto rilascio Forza ----
-  for(let i=0;i<50;i++){
-    const p=document.createElement("div");
-    p.style.position="absolute";
-    p.style.width="6px"; p.style.height="6px"; p.style.borderRadius="50%";
-    p.style.background=colore;
-    p.style.left=(Math.random()*output.offsetWidth)+"px";
-    p.style.top=(Math.random()*output.offsetHeight)+"px";
-    p.style.opacity=Math.random();
-    p.style.animation=`floatUp ${2+Math.random()*2}s ease-out forwards`;
-    output.appendChild(p);
-  }
-
-  // ---- grafico a torta ----
-  ctxChart.clearRect(0,0,chartCanvas.width,chartCanvas.height);
-  const data = [
-    {label:"Jedi", value:punteggi.jedi, color:"#3f8cff"},
-    {label:"Sith", value:punteggi.sith, color:"#c62828"},
-    {label:"Grigio", value:punteggi.grigio, color:"#a080ff"}
-  ];
-  let startAngle = -0.5 * Math.PI;
-  data.forEach(d=>{
-    const sliceAngle = (d.value/totale) * 2 * Math.PI;
-    ctxChart.beginPath();
-    ctxChart.moveTo(150,150);
-    ctxChart.arc(150,150,120,startAngle,startAngle+sliceAngle);
-    ctxChart.closePath();
-    ctxChart.fillStyle=d.color;
-    ctxChart.fill();
-    
-    // etichetta percentuale solo se >0
-    const perc = totale===0 ? 0 : Math.round((d.value/totale)*100);
-    if (perc>0) {
-      const midAngle = startAngle + sliceAngle/2;
-      const labelX = 150 + Math.cos(midAngle)*80;
-      const labelY = 150 + Math.sin(midAngle)*80;
-      ctxChart.fillStyle="#fff";
-      ctxChart.font="16px 'Orbitron'";
-      ctxChart.textAlign="center";
-      ctxChart.textBaseline="middle";
-      ctxChart.fillText(perc+"%", labelX, labelY);
-    }
-
-    startAngle += sliceAngle;
-  });
-
-  // ---- social links ----
-  socialsDiv.innerHTML = `
-    <a href="https://linktr.ee/JG.Academy" target="_blank" style="text-decoration:none;">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="#43E660" xmlns="http://www.w3.org/2000/svg">
-        <!-- Tronco -->
-        <rect x="11" y="10" width="2" height="10" rx="1"/>
-        <!-- Rami -->
-        <path d="M12 3L4 11h5l-3 4h4l2 3 2-3h4l-3-4h5L12 3z"/>
-      </svg>
-    </a>
-    <a href="https://www.tiktok.com/@jgacademy.pavia" target="_blank" style="text-decoration:none;">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="#69C9D0" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2v7.5a4.5 4.5 0 1 0 4.5 4.5V7.5h3V2h-7.5z"/>
-      </svg>
-    </a>
-  `;
-  socialsDiv.style.display="flex";
+function aggiornaProgress() {
+  progressBar.style.width = (domandaCorrente / domande.length * 100) + "%";
 }
 
-const style=document.createElement("style");
-style.innerHTML=`@keyframes floatUp {0%{transform:translateY(0);opacity:1;}100%{transform:translateY(-100px);opacity:0;}}`;
-document.head.appendChild(style);
+nextBtn.addEventListener("click", () => {
+  const selected = document.querySelector(
+    `input[name="q${domandaCorrente}"]:checked`
+  );
+  if (!selected) {
+    alert("Seleziona una risposta!");
+    return;
+  }
 
-ricominciaBtn.addEventListener("click",function(){
-  punteggi={jedi:0,sith:0,grigio:0};
-  domandaCorrente=0;
-  domande.forEach(d=>d.classList.remove("attiva"));
-  domande[0].classList.add("attiva");
-  document.getElementById("output").innerText="";
-  document.getElementById("output").style.color="#f5f5f5";
-  document.getElementById("output").style.textShadow="none";
-  ctxChart.clearRect(0,0,chartCanvas.width,chartCanvas.height);
-  socialsDiv.innerHTML="";
-  socialsDiv.style.display="none";
-  nextBtn.style.display="inline-block";
-  ricominciaBtn.style.display="none";
-  aggiornaProgress();
+  punteggi[selected.value]++;
+
+  domande[domandaCorrente].classList.add("esci");
+
+  setTimeout(() => {
+    domande[domandaCorrente].classList.remove("attiva","esci");
+    domandaCorrente++;
+
+    if (domandaCorrente < domande.length) {
+      domande[domandaCorrente].classList.add("attiva");
+    } else {
+      mostraRisultato();
+    }
+    aggiornaProgress();
+  }, 400);
 });
 
-// ===== Stelle animate =====
-const canvas=document.getElementById('stars');
-const ctx=canvas.getContext('2d');
-let width=canvas.width=window.innerWidth;
-let height=canvas.height=window.innerHeight;
-const stars=[];
-const numStars=150;
-for(let i=0;i<numStars;i++){ stars.push({ x:Math.random()*width, y:Math.random()*height, r:Math.random()*1.5+0.5, dx:(Math.random()-0.5)/2, dy:(Math.random()-0.5)/2 }); }
-function animateStars(){ ctx.clearRect(0,0,width,height); for(let s of stars){ ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fillStyle="white"; ctx.fill(); s.x+=s.dx; s.y+=s.dy; if(s.x<0)s.x=width; if(s.x>width)s.x=0; if(s.y<0)s.y=height; if(s.y>height)s.y=0; } requestAnimationFrame(animateStars); }
+function mostraRisultato() {
+  const output = document.getElementById("output");
+  output.innerText =
+    `Jedi: ${punteggi.jedi}\n` +
+    `Sith: ${punteggi.sith}\n` +
+    `Grigio: ${punteggi.grigio}`;
+  nextBtn.style.display = "none";
+  progressBar.style.width = "100%";
+}
+
+/* --- Stelle --- */
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+const stars = Array.from({length:150}, () => ({
+  x:Math.random()*canvas.width,
+  y:Math.random()*canvas.height,
+  r:Math.random()*1.5+0.5
+}));
+
+function animateStars(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  stars.forEach(s=>{
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle="white";
+    ctx.fill();
+  });
+  requestAnimationFrame(animateStars);
+}
 animateStars();
-window.addEventListener('resize',()=>{ width=canvas.width=window.innerWidth; height=canvas.height=window.innerHeight; });
 </script>
+
 </body>
 </html>
